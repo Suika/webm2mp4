@@ -258,11 +258,10 @@ def webm2mp4_worker(message, url):
 
 
 ### Telegram interaction below ###
-try:
-    with open("token.txt", "r") as f:
-        telegram_token = f.read().strip()
-except FileNotFoundError:
-    print("Put your Telegram bot token to 'token.txt' file")
+if os.getenv('BOT_TOKEN') is not None:
+    telegram_token = os.getenv('BOT_TOKEN').strip()
+else:
+    print("Please set the 'BOT_TOKEN' in your environment.")
     exit(1)
 bot = telebot.TeleBot(telegram_token)
 
