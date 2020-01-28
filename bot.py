@@ -24,7 +24,8 @@ HEADERS = {
 }
 MAXIMUM_FILESIZE_ALLOWED = 50*1024*1024 # ~50 MB
 ALLOWED_MIME_TYPES = ("video/webm", "application/octet-stream")
-FFMPEG_THREADS = 2
+FFMPEG_THREADS = os.getenv('FF_THREADS')
+FFMPEG_PRESETS = os.getenv('FF_PRESET')
 
 # MESSAGES
 error_wrong_code = "❗️ Resource returned HTTP {} code. Maybe link is broken"
@@ -124,7 +125,7 @@ def webm2mp4_worker(message, url):
         "-c:v", "libx264", # specify video encoder
         "-max_muxing_queue_size", "9999", # https://trac.ffmpeg.org/ticket/6375
         "-movflags", "+faststart", # optimize for streaming
-        "-preset", "slow", # https://trac.ffmpeg.org/wiki/Encode/H.264#a2.Chooseapresetandtune
+        "-preset", FFMPEG_PRESETS, # https://trac.ffmpeg.org/wiki/Encode/H.264#a2.Chooseapresetandtune
         "-timelimit", "900", # prevent DoS (exit after 15 min)
         "-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2", # https://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2#20848224
         filename
